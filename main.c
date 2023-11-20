@@ -171,8 +171,7 @@ int main(){
             scanf("%d", &dia);
             printf("Informe o mês (1-12) do evento a ser editado: ");
             scanf("%d", &mes);
-            printf("Informe a nova descriçao: ");
-            scanf(" %[^\n]", descricao);
+           
             break;
         case 3:
             system("clear");
