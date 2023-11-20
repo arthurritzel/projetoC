@@ -31,7 +31,70 @@ Evento* criaArvore(){
     };
     return raiz;
 }
+// ----------------------------------------
+int init(Evento *raiz){
+    //le os dados do arquivo banco-filmes.txt e armazena na struct, o arquivo esta sendo usado como banco de dados
+    FILE *file;
+    file = fopen("banco-agenda.txt", "r");
+    if (file == NULL){
+        printf("Problemas na consulta do banco de dados\n");
+        return 0;
+    }
+    
+    char vet[20], aux[20];
+    int cont = 0, dia, mes, desc[100];
 
+    while (fgets(vet, 100, file) != NULL){
+        if(cont == 0){
+            strcpy(aux, vet);
+            dia = atoi(aux);
+        }
+
+        if(cont == 1){
+            strcpy(aux, vet);
+            mes = atoi(aux);
+           
+        }
+        if(cont == 2){
+            strcpy(aux, vet);
+            strcpy(desc, aux);
+           
+        }
+        cont++;
+        if (cont >=3){
+            cont = 0;
+            insere_elemento(raiz, dia, mes, desc);
+        }   
+        
+    }
+    fclose(file);
+    return 0;
+}
+int finit_print(Evento raiz, FILE *file){
+    if (raiz != NULL) {
+        fprintf(file, "%i\n", raiz->dia);
+        fprintf(file, "%i\n", raiz->mes);
+        fprintf(file, "%s", raiz->descricao);
+        finit_print(raiz->esquerda, file);
+        finit_print(raiz->direita, file);
+    }
+}
+int finit(Evento raiz){
+    //armazena todos os dados da struct filmes no arquivo banco-filmes.txt
+    if(raiz != NULL){
+        FILE *file;
+        file = fopen("banco-agenda.txt", "w");
+        if (file == NULL){
+            printf("Problemas na gravacao do banco de dados\n");
+            return 0;
+        }
+        finit_print(raiz, file);
+        fclose(file);
+    }else{
+        return 0;
+    }
+}
+// -----------------------------------------------------
 int validar_data(int dia, int mes) {
         if (dia < 1 || dia > 31 || mes < 1 || mes > 12){ 
         return 1;
@@ -62,10 +125,13 @@ int libera_arvore(Evento * raiz){
 
 int main(){
     Evento *raiz = criaArvore();
-    int esc, mes, dia;
+    init(raiz);
+    int esc, mes, dia, esc_filtro, dia_busca, mes_busca, achou;
     char descricao[100];
+    system("clear");
 
     while (1){
+        printf("|------------AGENDA------------|\n");
         printf("\nMenu:\n");
         printf("1. Inserir evento\n");
         printf("2. Editar evento\n");
@@ -80,6 +146,8 @@ int main(){
         {
         case 1:
             do{
+                system("clear");
+                printf("|------------INSERIR------------|\n");
                 printf("Informe o dia (1-31): ");
                 scanf("%d", &dia);
                 printf("Informe o mes (1-12): ");
@@ -93,8 +161,12 @@ int main(){
                 }
             } while (validar_data(dia, mes) == 1);
             insere_elemento(raiz, dia, mes, descricao);
+            system("clear");
+            printf("Evento inserido com sucesso.\n");
             break;
         case 2:
+            system("clear");
+            printf("|------------EDITAR------------|\n");
             printf("Informe o dia (1-31) do evento a ser editado: ");
             scanf("%d", &dia);
             printf("Informe o mês (1-12) do evento a ser editado: ");
@@ -103,6 +175,8 @@ int main(){
             scanf(" %[^\n]", descricao);
             break;
         case 3:
+            system("clear");
+            printf("|------------EXCLUIR------------|\n");
             printf("Informe o dia (1-31) do evento a ser excluido: ");
             scanf("%d", &dia);
             printf("Informe o mês (1-12) do evento a ser excluido: ");
@@ -110,18 +184,35 @@ int main(){
             remove_no(raiz, dia, mes);
             break;
         case 4:
-                printf("\nEventos em ordem:\n");
+            system("clear");
+            printf("|------------EXIBIR EVENTOS------------|\n");
+            printf("Deseja:\n[1]-Filtrar busca\n[2]-Exibir todos os eventos\n->");
+            scanf("%i", &esc_filtro);
+            if (esc_filtro == 1){
+                achou = 0;
+                printf("Digite o dia: ");
+                scanf("%i", &dia_busca);
+                printf("Digite o mes: ");
+                scanf("%i", &mes_busca);
+                visualizar_arvore_filtro(*raiz, dia_busca, mes_busca, &achou);
+                if (achou != 1){
+                    printf("Elemento nao encontrado!\n");
+                }
+            }else if (esc_filtro == 2){
                 visualizar_arvore(*raiz);
-                break;
-
+            }else{
+                printf("Opcao invalida!\n");
+            }
             break;
         case 5:
+            finit(*raiz);
             libera_arvore(raiz);
             exit(1);
         default:
             printf("Opcao invalida. Tente novamente.\n");
         }
     }
+    finit(*raiz);
     libera_arvore(raiz);
     return 0;
 }

@@ -56,21 +56,31 @@ void remover_interno(no *no_print, no *ant){
 }
 
 void acha_no(no *no_print, int dia, int mes, no *ant){
+    int confirma = 0;
     if(no_print == NULL){
         return;
     }else{
         acha_no(no_print->esquerda, dia, mes, no_print);
         acha_no(no_print->direita, dia, mes, no_print);
         if(no_print->dia == dia && no_print->mes == mes){
-            if(no_print->esquerda == NULL && no_print->direita == NULL){
-                remover_folha(no_print, ant);
-                return;
-            }else if((no_print->esquerda == NULL && no_print->direita != NULL) || (no_print->esquerda != NULL && no_print->direita == NULL)){
-                remover_umFilho(no_print, ant);
-                return;
+            printf("Data: %d/%d - Descricao: %s\n", no_print->dia, no_print->mes, no_print->descricao);
+            printf("Tem certeza que deseja remover esse evento?\n[1]-SIM\n[2]-CANCELAR\n->");
+            scanf("%i", &confirma);
+            if (confirma == 1){
+                if(no_print->esquerda == NULL && no_print->direita == NULL){
+                    remover_folha(no_print, ant);
+                    return;
+                }else if((no_print->esquerda == NULL && no_print->direita != NULL) || (no_print->esquerda != NULL && no_print->direita == NULL)){
+                    remover_umFilho(no_print, ant);
+                    return;
+                }else{
+                    remover_interno(no_print, ant);
+                    return;
+                }
+                system("clear");
+                printf("Elemento removido!");
             }else{
-                remover_interno(no_print, ant);
-                return;
+                printf("Operacao cancelada");
             }
         }
     }
