@@ -169,10 +169,24 @@ int main(){
             printf("|------------EDITAR------------|\n");
             printf("Informe o dia (1-31) do evento a ser editado: ");
             scanf("%d", &dia);
+            fflush(stdin);
+            if (dia < 1 || dia > 31) {
+                printf("Dia inválido. Tente novamente.\n");
+                printf("Informe o dia (1-31) do evento a ser editado: ");
+                scanf("%d", &dia);
+            }
             printf("Informe o mês (1-12) do evento a ser editado: ");
             scanf("%d", &mes);
-            printf("Informe a nova descriçao: ");
-            scanf(" %[^\n]", descricao);
+            fflush(stdin);
+            if (mes < 1 || mes > 12) {
+            printf("Mês inválido. Tente novamente.\n");
+            printf("Informe o mês (1-12) do evento a ser editado: ");
+            scanf("%d", &mes);
+            }
+            printf("Informe a nova descrição: ");
+            gets(descricao);
+            fflush(stdin);
+            raiz = editar_evento(raiz, dia, mes, descricao);
             break;
         case 3:
             system("clear");
