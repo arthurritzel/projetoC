@@ -74,7 +74,7 @@ int finit_print(Evento raiz, FILE *file){
     if (raiz != NULL) {
         fprintf(file, "%i\n", raiz->dia);
         fprintf(file, "%i\n", raiz->mes);
-        fprintf(file, "%s", raiz->descricao);
+        fprintf(file, "%s\n", raiz->descricao);
         finit_print(raiz->esquerda, file);
         finit_print(raiz->direita, file);
     }
@@ -126,11 +126,17 @@ int libera_arvore(Evento * raiz){
 int main(){
     Evento *raiz = criaArvore();
     init(raiz);
-    int esc, mes, dia, esc_filtro, dia_busca, mes_busca, achou;
+    int esc, mes, dia, esc_filtro, dia_busca, mes_busca, achou, cont_balanceamento = 0;
     char descricao[100];
     system("clear");
 
     while (1){
+        if(cont_balanceamento == 3){
+            balancearArvore(raiz);
+            printf("resenha");
+            cont_balanceamento = 0;
+        }
+
         printf("|------------AGENDA------------|\n");
         printf("\nMenu:\n");
         printf("1. Inserir evento\n");
@@ -163,6 +169,7 @@ int main(){
             insere_elemento(raiz, dia, mes, descricao);
             system("clear");
             printf("Evento inserido com sucesso.\n");
+            cont_balanceamento++;
             break;
         case 2:
             system("clear");
