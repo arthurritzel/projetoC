@@ -14,6 +14,7 @@ typedef struct No no;
 
 typedef struct No *Evento;
 
+
 #include "src/deletar.h"
 #include "src/editar.h"
 #include "src/visualizar.h"
@@ -166,27 +167,22 @@ int main(){
             break;
         case 2:
             system("clear");
-            printf("|------------EDITAR------------|\n");
-            printf("Informe o dia (1-31) do evento a ser editado: ");
-            scanf("%d", &dia);
-            fflush(stdin);
-            if (dia < 1 || dia > 31) {
-                printf("Dia inválido. Tente novamente.\n");
-                printf("Informe o dia (1-31) do evento a ser editado: ");
+            do{
+                printf("|------------EDITAR------------|\n");
+                printf("Informe o dia (1-31): ");
                 scanf("%d", &dia);
-            }
-            printf("Informe o mês (1-12) do evento a ser editado: ");
-            scanf("%d", &mes);
-            fflush(stdin);
-            if (mes < 1 || mes > 12) {
-            printf("Mês inválido. Tente novamente.\n");
-            printf("Informe o mês (1-12) do evento a ser editado: ");
-            scanf("%d", &mes);
-            }
-            printf("Informe a nova descrição: ");
-            gets(descricao);
-            fflush(stdin);
-            raiz = editar_evento(raiz, dia, mes, descricao);
+                printf("Informe o mes (1-12): ");
+                scanf("%d", &mes);
+                if (validar_data(dia, mes) == 1){
+                        printf("Data invalida. Tente novamente.\n");
+                }else{
+                    printf("Informe a descricao: ");
+                    fflush(stdin);
+                    gets(descricao);
+                }
+            } while (validar_data(dia, mes) == 1);
+
+            editar_no(*raiz, dia, mes, descricao, *raiz);
             break;
         case 3:
             system("clear");
