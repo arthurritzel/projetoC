@@ -1,79 +1,3 @@
-// struct Node{
-//     Evento evento;
-//     struct Node *prox;
-// };
-// typedef struct Node node;
-// typedef node *lista;
-
-
-// lista* criarlistta(){
-//     lista *inicio = (lista*) malloc(sizeof(lista));
-//     if (inicio != NULL){
-//         *inicio = NULL;
-//     }else{
-//         printf("Erro na alocaçãooo");
-//     }
-//     return inicio;
-// }
-
-// int inserenofinal(lista *inicio, Evento nodeArv){
-//     node *novo = (node*)malloc(sizeof(node));
-//     if(novo == NULL){
-//         printf("Erro na alocacao");
-//         return 0;
-//     }else{
-//         if((*inicio) == NULL){
-//             *inicio = novo;
-//         }else{
-//             node *temp;
-//             temp = (*inicio);
-//             while (temp->prox != NULL){
-//                 temp = temp->prox;
-//             }
-//             temp->prox = novo;
-//             novo->prox = NULL;
-//         }
-//         novo->evento = nodeArv;
-//     }
-// }
-
-// void exibelista(lista*inicio){
-    
-//     if(*inicio == NULL){
-//         printf("Lista vazia");
-//     }else{
-//         node *temp;
-//         temp = (*inicio);
-
-//         while (temp != NULL){
-//             printf("%s\n", temp->evento->descricao);
-//             temp = temp->prox;
-//         }
-//     }
-// }
-
-// int construirLista(Evento nodeArv, lista *list){
-//     construirLista(nodeArv->esquerda, list);
-//     inserenofinal(list, nodeArv);
-//     construirLista(nodeArv->direita, list);
-// }
-
-// Evento balancearArvore(Evento raiz){
-//     if(raiz != NULL){
-//         lista *list = criarlistta();
-//         construirLista(raiz, list);
-//         exibelista(list);
-//     }
-// }
-
-struct Node {
-    Evento evento;
-    struct Node* prox;
-};
-
-typedef struct Node node;
-typedef node* lista;
-
 lista* criarlista(){
     lista *inicio = (lista*) malloc(sizeof(lista));
     if (inicio != NULL){
@@ -93,7 +17,6 @@ int inserenofinal(lista* inicio, Evento nodeArv) {
         if ((*inicio) == NULL) {
             *inicio = novo;
         } else {
-            printf("node desc: %s", nodeArv->descricao);
             node* temp;
             temp = (*inicio);
             while (temp->prox != NULL) {
@@ -129,16 +52,60 @@ int construirLista(Evento nodeArv, lista* list) {
     construirLista(nodeArv->esquerda, list);
     inserenofinal(list, nodeArv);
     construirLista(nodeArv->direita, list);
-    return 1;
+    
 }
 
-Evento* balancearArvore(Evento* raiz) {
-    if (raiz != NULL) {
-        lista* inicio = criarlista();
-        construirLista(raiz, inicio);
-        exibelista(inicio);
-        // Implemente a lógica para equilibrar a árvore e retorne a raiz equilibrada
-        return raiz;
+
+no *criarNo(int mes, int dia, const char *descricao) {
+    no *novoNo = (no *)malloc(sizeof(no));
+    novoNo->mes = mes;
+    novoNo->dia = dia;
+    strcpy(novoNo->descricao, descricao);
+    novoNo->esquerda = NULL;
+    novoNo->direita = NULL;
+    return novoNo;
+}
+
+no *listaParaArvore(lista *head, int tamanho) {
+    if (tamanho <= 0) {
+        return NULL;
     }
-    return NULL;
+
+    // Encontrar o meio da lista
+    int meio = tamanho / 2;
+
+    // Avançar até o meio da lista
+    lista *atual = head;
+    for (int i = 0; i < meio; i++) {
+        atual = &((*atual)->prox);
+    }
+
+    // Criar o nó correspondente ao meio
+    no *raiz = criarNo((*atual)->evento->mes, (*atual)->evento->dia, (*atual)->evento->descricao);
+
+    // Recursivamente construir as subárvores
+    raiz->esquerda = listaParaArvore(head, meio);
+    raiz->direita = listaParaArvore(&((*atual)->prox), tamanho - meio - 1);
+
+    return raiz;
+}
+
+void contador(no *no_print, int*cont){
+    if(no_print == NULL){
+        return;
+    }else{
+        contador(no_print->esquerda, cont);
+        contador(no_print->direita, cont);
+        *cont += 1;
+    }
+}
+
+int contar_nos(Evento * raiz){
+    if(raiz == NULL){
+        return 0;
+    }else{
+        int cont = 0;
+        contador(*raiz, &cont);
+        return cont;
+    }
 }

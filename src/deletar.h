@@ -86,11 +86,68 @@ void acha_no(no *no_print, int dia, int mes, no *ant){
     }
 }
 
+void remover_folha_raiz(no **raiz) {
+    free(*raiz);
+    *raiz = NULL;
+}
+
+void remover_umFilho_raiz(no **raiz) {
+    if ((*raiz)->esquerda != NULL) {
+        no *temp = *raiz;
+        *raiz = (*raiz)->esquerda;
+        free(temp);
+    } else {
+        no *temp = *raiz;
+        *raiz = (*raiz)->direita;
+        free(temp);
+    }
+}
+
+void remover_interno_raiz(no **raiz) {
+    no *atual2 = (*raiz)->esquerda;
+    no *anterior2 = (*raiz)->esquerda;
+
+    while (atual2->direita != NULL) {
+        anterior2 = atual2;
+        atual2 = atual2->direita;
+    }
+
+    anterior2->direita = NULL;
+    atual2->direita = (*raiz)->direita;
+
+    if (atual2 == (*raiz)->esquerda) {
+        atual2->esquerda = NULL;
+    } else {
+        atual2->esquerda = (*raiz)->esquerda;
+    }
+
+    free(*raiz);
+    *raiz = atual2;
+}
+
+
 int remove_no(Evento *raiz, int dia, int mes){
+    int confirma;
     if(raiz == NULL){
         return 0;
     }else if((*raiz)->mes == mes && (*raiz)->dia == dia){
-        
+        printf("Data: %d/%d - Descricao: %s\n", (*raiz)->dia, (*raiz)->mes, (*raiz)->descricao);
+        printf("Tem certeza que deseja remover esse evento?\n[1]-SIM\n[2]-CANCELAR\n->");
+        scanf("%i", &confirma);
+        if (confirma == 1){
+            if ((*raiz)->esquerda == NULL && (*raiz)->direita == NULL) {
+                remover_folha_raiz(raiz);
+            } else if (((*raiz)->esquerda == NULL && (*raiz)->direita != NULL) ||
+                    ((*raiz)->esquerda != NULL && (*raiz)->direita == NULL)) {
+                remover_umFilho_raiz(raiz);
+            } else {
+                remover_interno_raiz(raiz);
+            }
+            return 1;
+        }else{
+            printf("Operação cancelada");
+            return 0;  
+        }
     }else{
         acha_no(*raiz, dia, mes, *raiz);
     }

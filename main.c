@@ -14,12 +14,21 @@ typedef struct No no;
 
 typedef struct No *Evento;
 
+struct Node {
+    Evento evento;
+    struct Node* prox;
+};
+
+typedef struct Node node;
+typedef node* lista;
 
 #include "src/deletar.h"
 #include "src/editar.h"
 #include "src/visualizar.h"
 #include "src/inserir.h"
 #include "src/balancear.h"
+
+
 
 
 Evento* criaArvore(){
@@ -46,6 +55,7 @@ int init(Evento *raiz){
     int cont = 0, dia, mes, desc[100];
 
     while (fgets(vet, 100, file) != NULL){
+        
         if(cont == 0){
             strcpy(aux, vet);
             dia = atoi(aux);
@@ -57,14 +67,14 @@ int init(Evento *raiz){
            
         }
         if(cont == 2){
-            strcpy(aux, vet);
-            strcpy(desc, aux);
+            
+            strcpy(desc, vet);
            
         }
         cont++;
         if (cont >=3){
             cont = 0;
-            insere_elemento(raiz, dia, mes, desc);
+            insere_elemento_init(raiz, dia, mes, desc);
         }   
         
     }
@@ -75,13 +85,12 @@ int finit_print(Evento raiz, FILE *file){
     if (raiz != NULL) {
         fprintf(file, "%i\n", raiz->dia);
         fprintf(file, "%i\n", raiz->mes);
-        fprintf(file, "%s\n", raiz->descricao);
+        fprintf(file, "%s", raiz->descricao);
         finit_print(raiz->esquerda, file);
         finit_print(raiz->direita, file);
     }
 }
 int finit(Evento raiz){
-    //armazena todos os dados da struct filmes no arquivo banco-filmes.txt
     if(raiz != NULL){
         FILE *file;
         file = fopen("banco-agenda.txt", "w");
@@ -123,18 +132,20 @@ int libera_arvore(Evento * raiz){
     }
     free(raiz);
 }
-
 int main(){
+    lista* cabeca = criarlista();
     Evento *raiz = criaArvore();
     init(raiz);
-    int esc, mes, dia, esc_filtro, dia_busca, mes_busca, achou, cont_balanceamento = 0;
+    int esc, mes, dia, esc_filtro, dia_busca, mes_busca, achou, cont_balanceamento = 0, cont = 0;
     char descricao[100];
     system("clear");
 
     while (1){
         if(cont_balanceamento == 3){
-            balancearArvore(raiz);
-            printf("resenha");
+            printf("Blanceando...\n");
+            construirLista(*raiz, cabeca);
+            cont = contar_nos(raiz);
+            *raiz = listaParaArvore(cabeca, cont);
             cont_balanceamento = 0;
         }
 
@@ -152,8 +163,8 @@ int main(){
         switch (esc)
         {
         case 1:
+            system("clear");
             do{
-                system("clear");
                 printf("|------------INSERIR------------|\n");
                 printf("Informe o dia (1-31): ");
                 scanf("%d", &dia);
@@ -225,6 +236,12 @@ int main(){
             finit(*raiz);
             libera_arvore(raiz);
             exit(1);
+        case 6:
+            construirLista(*raiz, cabeca);
+            exibelista(cabeca);
+            cont = contar_nos(raiz);
+            *raiz = listaParaArvore(cabeca, cont);
+            break;
         default:
             printf("Opcao invalida. Tente novamente.\n");
         }
