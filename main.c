@@ -11,7 +11,6 @@ struct No
     struct No *direita;
 };
 typedef struct No no;
-
 typedef struct No *Evento;
 
 struct Node {
@@ -43,7 +42,6 @@ Evento* criaArvore(){
 }
 // ----------------------------------------
 int init(Evento *raiz){
-    //le os dados do arquivo banco-filmes.txt e armazena na struct, o arquivo esta sendo usado como banco de dados
     FILE *file;
     file = fopen("banco-agenda.txt", "r");
     if (file == NULL){
@@ -114,6 +112,7 @@ int validar_data(int dia, int mes) {
         }
 }
 
+// -----------------------------------------------------
 void libera_no(no *no_liberar){
     if(no_liberar == NULL){
         return;
@@ -132,6 +131,8 @@ int libera_arvore(Evento * raiz){
     }
     free(raiz);
 }
+// -----------------------------------------------------
+
 int main(){
     lista* cabeca = criarlista();
     Evento *raiz = criaArvore();
@@ -142,7 +143,7 @@ int main(){
 
     while (1){
         if(cont_balanceamento == 3){
-            printf("Blanceando...\n");
+            printf("Realizando balanceamento...\n");
             construirLista(*raiz, cabeca);
             cont = contar_nos(raiz);
             *raiz = listaParaArvore(cabeca, cont);

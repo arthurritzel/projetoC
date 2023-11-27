@@ -78,9 +78,10 @@ void acha_no(no *no_print, int dia, int mes, no *ant){
                     return;
                 }
                 system("clear");
-                printf("Elemento removido!");
+                printf("Elemento removido!\n");
             }else{
-                printf("Operacao cancelada");
+                system("clear");
+                printf("Operacao cancelada\n");
             }
         }
     }
@@ -143,9 +144,12 @@ int remove_no(Evento *raiz, int dia, int mes){
             } else {
                 remover_interno_raiz(raiz);
             }
+            system("clear");
+            printf("Elemento removido!\n");
             return 1;
         }else{
-            printf("Operação cancelada");
+            system("clear");
+            printf("Operação cancelada\n");
             return 0;  
         }
     }else{
