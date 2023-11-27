@@ -105,7 +105,7 @@ int finit(Evento raiz){
 // -----------------------------------------------------
 int validar_data(int dia, int mes) {
         if (dia < 1 || dia > 31 || mes < 1 || mes > 12){ 
-        return 1;
+            return 1;
         }
         else{
             return 0;
@@ -179,10 +179,11 @@ int main(){
                     gets(descricao);
                 }
             } while (validar_data(dia, mes) == 1);
-            insere_elemento(raiz, dia, mes, descricao);
-            system("clear");
-            printf("Evento inserido com sucesso.\n");
-            cont_balanceamento++;
+            if(insere_elemento(raiz, dia, mes, descricao)){
+                system("clear");
+                printf("Evento inserido com sucesso.\n");
+                cont_balanceamento++;
+            }
             break;
         case 2:
             system("clear");
@@ -206,10 +207,16 @@ int main(){
         case 3:
             system("clear");
             printf("|------------EXCLUIR------------|\n");
-            printf("Informe o dia (1-31) do evento a ser excluido: ");
-            scanf("%d", &dia);
-            printf("Informe o mês (1-12) do evento a ser excluido: ");
-            scanf("%d", &mes);
+            do{
+                printf("Informe o dia (1-31): ");
+                scanf("%d", &dia);
+                printf("Informe o mes (1-12): ");
+                scanf("%d", &mes);
+                if (validar_data(dia, mes) == 1){
+                        printf("Data invalida. Tente novamente.\n");
+                }
+            } while (validar_data(dia, mes) == 1);
+            
             remove_no(raiz, dia, mes);
             break;
         case 4:

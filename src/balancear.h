@@ -8,6 +8,21 @@ lista* criarlista(){
     return inicio;
 }
 
+void exibelista(lista*inicio){
+    
+    if(*inicio == NULL){
+        printf("Lista vazia");
+    }else{
+        node *temp;
+        temp = (*inicio);
+
+        while (temp != NULL){
+            printf("%s\n", temp->evento->descricao);
+            temp = temp->prox;
+        }
+    }
+}
+
 int inserenofinal(lista* inicio, Evento nodeArv) {
     node* novo = (node*)malloc(sizeof(node));
     if (novo == NULL) {
@@ -30,20 +45,6 @@ int inserenofinal(lista* inicio, Evento nodeArv) {
     }
 }
 
-void exibelista(lista*inicio){
-    
-    if(*inicio == NULL){
-        printf("Lista vazia");
-    }else{
-        node *temp;
-        temp = (*inicio);
-
-        while (temp != NULL){
-            printf("%s\n", temp->evento->descricao);
-            temp = temp->prox;
-        }
-    }
-}
 
 int construirLista(Evento nodeArv, lista* list) {
     if (nodeArv == NULL) {

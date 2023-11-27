@@ -50,7 +50,7 @@ int insere_elemento(Evento *raiz, int dia, int mes, char descricao[100])
             {
                 ant->esquerda = novo;
             }
-
+            return 1;
         }
 
     }
